@@ -4,58 +4,62 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float jumpForce;
-    public float gravity = 9.8f;
-    public float speed;
+    public float Speed = 5f;
 
-    private Vector3 _moveVector;
-    private float _fallVelocity = 0f;
-    private CharacterController character;
+    public float jumpForce = 10;
+
+    public float gravity = 9.8f;
+
+    Vector3 _move;
+
+    CharacterController _controller;
+
+    private float _fallVelocity = 0;
 
     void Start()
     {
-        _moveVector = Vector3.forward;
-        character = GetComponent<CharacterController>();
+        _controller = GetComponent<CharacterController>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
+        _move = Vector3.zero;
 
-        _fallVelocity += gravity * Time.fixedDeltaTime;
-        character.Move(Vector3.down * _fallVelocity * Time.fixedDeltaTime);
-        character.Move(_moveVector * Time.fixedDeltaTime * speed);
-    }
-
-    private void Update()
-    {
-        // MOVEMENT
-        _moveVector = Vector3.zero;
-
-        if (Input.GetKey(KeyCode.W)) 
+        if (Input.GetKey(KeyCode.W))
         {
-            _moveVector += transform.forward;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            _moveVector -= transform.right;
+            _move += transform.forward;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            _moveVector -= transform.forward;
+            _move -= transform.forward;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            _move -= transform.right;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            _moveVector += transform.right;
+            _move += transform.right;
         }
 
-        // JUMP
-        if (Input.GetKeyDown(KeyCode.Space) && character.isGrounded)
-        {
-           _fallVelocity = -jumpForce;
-        }
+
+
 
         // OTHER
-        if (character.isGrounded)
+
+
+        if (Input.GetKey(KeyCode.Space) && _controller.isGrounded)
+        {
+            _fallVelocity = -jumpForce;
+        }
+
+    }
+    private void FixedUpdate()
+    {
+        _controller.Move(_move * Speed * Time.deltaTime);
+        _fallVelocity += gravity * Time.fixedDeltaTime;
+        _controller.Move(Vector3.down * _fallVelocity * Time.fixedDeltaTime);
+        if (_controller.isGrounded)
         {
             _fallVelocity = 0;
         }
