@@ -18,6 +18,7 @@ public class FireballScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
         Invoke("DestroyFireball", lifeTime);
     }
 
